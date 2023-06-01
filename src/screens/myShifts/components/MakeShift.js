@@ -1,30 +1,30 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { sectionedByDate } from "../../../db/dataBase";
+import { sectionedByDate, changeStatus } from "../../../db/dataBase";
 
-const MakeShift = (data) => {
-  const startTime = new Date(data.data.startTime)
-    .toLocaleTimeString()
-    .slice(0, 5);
-  const endTime = new Date(data.data.endTime).toLocaleTimeString().slice(0, 5);
-  console.log(startTime, endTime);
+const MakeShift = ({ data, setState }) => {
+  const startTime = new Date(data.startTime).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour24: true,
+  });
+  const endTime = new Date(data.endTime).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour24: true,
+  });
   return (
     <View style={styles.tab}>
       <View>
         <Text style={styles.text}>
           {startTime} - {endTime}
         </Text>
-        <Text style={styles.text}>{data.data.area}</Text>
+        <Text style={styles.text}>{data.area}</Text>
       </View>
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
-          sectionedByDate.map((item) => {
-            item.data.map((shift) => {
-              if (shift.id === data.data.id) {
-                shift.booked = false;
-              }
-            });
-          });
+          changeStatus(data.id, false);
+          setState(sectionedByDate);
         }}
       >
         <Text style={styles.btnText}>Cancel</Text>

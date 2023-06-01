@@ -5,21 +5,27 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
+import React, { useState, useCallback } from "react";
 import { sectionedByDate } from "../../db/dataBase";
+import { useFocusEffect } from "@react-navigation/native";
 import MakeShift from "./components/MakeShift";
 
 const MyShifts = () => {
+    const [shifts, setShifts] = useState([])
+    useFocusEffect(
+        useCallback(() => {
+            setShifts(sectionedByDate);
+        }, [])
+    );
+
+    
   return (
     <View>
       <SectionList
         style={styles.container}
-        sections={sectionedByDate}
+        sections={shifts}
         keyExtractor={(item, index) => item + index}
-        renderItem={({ item }) => {
-          if (item.booked) {
-            return <MakeShift data={item} />;
-          }
-        }}
+        renderItem={({ item }) => <MakeShift data={item} setState={setShifts} />}
         renderSectionHeader={({ section: { title } }) => (
           <Text style={styles.header}>{title}</Text>
         )}
